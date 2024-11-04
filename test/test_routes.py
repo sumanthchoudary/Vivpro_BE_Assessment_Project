@@ -7,7 +7,7 @@ from models import db, Song
 @pytest.fixture
 def client():
     app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test_songs.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test_songs.db' # create an another test_songs.db
     with app.test_client() as client:
         with app.app_context():
             db.drop_all()

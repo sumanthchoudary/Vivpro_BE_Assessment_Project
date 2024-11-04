@@ -7,7 +7,7 @@ import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///songs.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # to improve performance by not having tracking 
 
 db.init_app(app)
 
@@ -18,13 +18,6 @@ def populate_database():
 
     # Convert JSON data to DataFrame
     df = pd.DataFrame.from_dict(data)
-
-    # Check if 'danceability' is in the columns; if not, transpose
-    if 'danceability' not in df.columns:
-        df = df.transpose()
-
-    # Reset index
-    df.reset_index(drop=True, inplace=True)
 
     # Rename 'class' column to 'song_class' to avoid conflict with reserved keyword
     if 'class' in df.columns:

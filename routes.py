@@ -5,12 +5,17 @@ from models import db, Song
 
 bp = Blueprint('routes', __name__)
 
+# To get the details of all songs
 @bp.route('/songs', methods=['GET'])
 def get_songs():
     page = request.args.get('page', 1, type=int)
     limit = request.args.get('limit', 10, type=int)
     pagination = Song.query.paginate(page=page, per_page=limit, error_out=False)
-    songs = [song.to_dict() for song in pagination.items]
+    
+    songs = []
+    for song in pagination.items:
+        songs.append(song.to_dict())
+
     return jsonify({
         'songs': songs,
         'total': pagination.total,
@@ -18,13 +23,15 @@ def get_songs():
         'page': pagination.page
     })
 
+#To ge the details of a song searched by title
 @bp.route('/songs/title/<string:title>', methods=['GET'])
 def get_song_by_title(title):
-    songs = Song.query.filter(Song.title.ilike(f'%{title}%')).all()
+    songs = Song.query.filter(Song.title.ilike(f'%{title}%')).all() # ilike to make the search case-sensitive 
     if not songs:
         abort(404, description="Song not found")
     return jsonify([song.to_dict() for song in songs])
 
+# To give rating to a song 
 @bp.route('/songs/<int:id>/rate', methods=['POST'])
 def rate_song(id):
     data = request.get_json()
@@ -48,6 +55,7 @@ def rate_song(id):
         'song': song.to_dict()
     }), 200
 
+#To ge the details of a song searched by ID
 @bp.route('/songs/<int:id>', methods=['GET'])
 def get_song(id):
     song = Song.query.get_or_404(id, description="Song not found")

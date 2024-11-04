@@ -30,7 +30,7 @@ class Song(db.Model):
     total_rating = db.Column(db.Float, default=0)
     num_ratings = db.Column(db.Integer, default=0)
 
-    @property
+    @property # to call as an attribute 
     def average_rating(self):
         if self.num_ratings == 0:
             return None
